@@ -1,0 +1,68 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#gradient)" stroke="#667eea" stroke-width="2"/>
+  
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Inner shadow filter -->
+    <filter id="innerShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.3"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Main Image Icon -->
+  <g transform="translate(100, 100)">
+    <!-- Image Frame -->
+    <rect x="-35" y="-25" width="70" height="50" rx="4" fill="white" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Image Content (simplified landscape) -->
+    <rect x="-30" y="-20" width="60" height="15" fill="#4CAF50" rx="1"/>
+    <rect x="-30" y="-5" width="60" height="10" fill="#2196F3" rx="1"/>
+    <rect x="-30" y="5" width="60" height="15" fill="#FF9800" rx="1"/>
+    
+    <!-- Compression Arrows -->
+    <g stroke="#667eea" stroke-width="2" fill="none" stroke-linecap="round">
+      <!-- Left arrow -->
+      <line x1="-50" y1="-15" x2="-40" y2="-15"/>
+      <polyline points="-45,-20 -40,-15 -45,-10"/>
+      
+      <!-- Right arrow -->
+      <line x1="40" y1="-15" x2="50" y2="-15"/>
+      <polyline points="45,-10 40,-15 45,-20"/>
+      
+      <!-- Top arrow -->
+      <line x1="-15" y1="-50" x2="-15" y2="-40"/>
+      <polyline points="-20,-45 -15,-40 -10,-45"/>
+      
+      <!-- Bottom arrow -->
+      <line x1="-15" y1="40" x2="-15" y2="50"/>
+      <polyline points="-10,45 -15,40 -20,45"/>
+    </g>
+    
+    <!-- Compression Indicator -->
+    <circle cx="0" cy="0" r="8" fill="#667eea" opacity="0.8"/>
+    <text x="0" y="3" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">C</text>
+  </g>
+  
+  <!-- App Name -->
+  <text x="100" y="170" text-anchor="middle" fill="#333" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600">
+    Image Compressor
+  </text>
+  
+  <!-- Tagline -->
+  <text x="100" y="185" text-anchor="middle" fill="#666" font-family="Inter, Arial, sans-serif" font-size="10">
+    Secure & Auto-Clean
+  </text>
+</svg>

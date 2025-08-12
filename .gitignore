@@ -1,0 +1,18 @@
+# AdSense Configuration - Keep Private
+config.js
+
+# Other sensitive files
+.env
+*.key
+*.pem
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
