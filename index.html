@@ -356,6 +356,13 @@
        margin-bottom: 10px;
      }
      
+     .quality-hint {
+       color: #999;
+       font-size: 12px;
+       margin-top: 5px;
+       font-style: italic;
+     }
+     
      .compress-btn {
        background: linear-gradient(135deg, #667eea, #764ba2);
        color: white;
@@ -572,6 +579,30 @@
         font-size: 12px;
         color: #666;
         margin: 5px 0;
+      }
+      
+      .dimension-info {
+        font-size: 11px;
+        color: #999;
+        margin: 2px 0;
+      }
+      
+      .compression-info {
+        font-size: 12px;
+        font-weight: 600;
+        margin: 8px 0;
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+      
+      .compression-info.success {
+        color: #28a745;
+        background: rgba(40, 167, 69, 0.1);
+      }
+      
+      .compression-info.warning {
+        color: #ffc107;
+        background: rgba(255, 193, 7, 0.1);
       }
       
       .download-btn {
@@ -1072,8 +1103,9 @@
       </div>
       
       <div class="compression-controls" id="compressionControls" style="display: none;">
-        <div class="quality-label">Compression Quality: <span id="qualityValue">80%</span></div>
-        <input type="range" id="qualitySlider" class="quality-slider" min="10" max="90" value="80">
+        <div class="quality-label">Compression Quality: <span id="qualityValue">50%</span></div>
+        <input type="range" id="qualitySlider" class="quality-slider" min="20" max="90" value="50">
+        <div class="quality-hint">Lower quality = smaller file size. 50% provides good compression while maintaining acceptable quality.</div>
         <button class="compress-btn" id="compressBtn">Compress Images</button>
         <button class="clear-btn" id="clearBtn">Clear Images</button>
       </div>
@@ -1430,32 +1462,69 @@
          const img = new Image();
          
          img.onload = function() {
-           canvas.width = img.width;
-           canvas.height = img.height;
-           ctx.drawImage(img, 0, 0);
+           // Calculate optimal dimensions for compression
+           let targetWidth = img.width;
+           let targetHeight = img.height;
            
-           // Determine output format based on original file type
+           // For very large images, scale down to improve compression
+           const maxDimension = 1920; // Max width/height
+           if (img.width > maxDimension || img.height > maxDimension) {
+             const ratio = Math.min(maxDimension / img.width, maxDimension / img.height);
+             targetWidth = Math.round(img.width * ratio);
+             targetHeight = Math.round(img.height * ratio);
+           }
+           
+           canvas.width = targetWidth;
+           canvas.height = targetHeight;
+           
+           // Enable image smoothing for better quality
+           ctx.imageSmoothingEnabled = true;
+           ctx.imageSmoothingQuality = 'high';
+           
+           // Draw the image with new dimensions
+           ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+           
+           // Determine optimal output format and quality
            let outputFormat = 'image/jpeg';
            let outputExtension = 'jpg';
+           let compressionQuality = quality;
            
            if (file.type === 'image/png') {
-             outputFormat = 'image/png';
-             outputExtension = 'png';
+             // PNG compression: convert to JPEG for better compression unless it's a transparent image
+             outputFormat = 'image/jpeg';
+             outputExtension = 'jpg';
+             compressionQuality = Math.max(0.3, quality * 0.8); // Lower quality for PNG->JPEG conversion
            } else if (file.type === 'image/webp') {
              outputFormat = 'image/webp';
              outputExtension = 'webp';
+             compressionQuality = quality;
            } else if (file.type === 'image/gif') {
-             outputFormat = 'image/gif';
-             outputExtension = 'gif';
+             // GIFs are usually already compressed, convert to JPEG
+             outputFormat = 'image/jpeg';
+             outputExtension = 'jpg';
+             compressionQuality = Math.max(0.4, quality * 0.7);
            } else if (file.type === 'image/bmp') {
-             outputFormat = 'image/png'; // Convert BMP to PNG for better compression
-             outputExtension = 'png';
+             outputFormat = 'image/jpeg';
+             outputExtension = 'jpg';
+             compressionQuality = Math.max(0.5, quality * 0.9);
+           } else {
+             // JPEG files
+             outputFormat = 'image/jpeg';
+             outputExtension = 'jpg';
+             compressionQuality = quality;
            }
            
            canvas.toBlob((blob) => {
              const originalSize = file.size;
              const compressedSize = blob.size;
-             const compressionRatio = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+             
+             // Calculate compression ratio
+             let compressionRatio;
+             if (compressedSize >= originalSize) {
+               compressionRatio = 0; // No compression achieved
+             } else {
+               compressionRatio = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+             }
              
              resolve({
                original: file,
@@ -1463,11 +1532,13 @@
                originalSize: originalSize,
                compressedSize: compressedSize,
                compressionRatio: compressionRatio,
-               quality: quality,
+               quality: compressionQuality,
                outputFormat: outputFormat,
-               outputExtension: outputExtension
+               outputExtension: outputExtension,
+               originalDimensions: `${img.width}x${img.height}`,
+               compressedDimensions: `${targetWidth}x${targetHeight}`
              });
-           }, outputFormat, quality);
+           }, outputFormat, compressionQuality);
          };
          
          img.src = URL.createObjectURL(file);
@@ -1490,10 +1561,15 @@
                <div class="original">
                  <img src="${originalUrl}" alt="Original">
                  <div class="file-info">Original: ${(result.originalSize / 1024).toFixed(1)} KB</div>
+                 <div class="dimension-info">${result.originalDimensions}</div>
                </div>
                <div class="compressed">
                  <img src="${compressedUrl}" alt="Compressed">
-                 <div class="file-info">Compressed: ${(result.compressedSize / 1024).toFixed(1)} KB (${result.compressionRatio}% reduced)</div>
+                 <div class="file-info">Compressed: ${(result.compressedSize / 1024).toFixed(1)} KB</div>
+                 <div class="dimension-info">${result.compressedDimensions}</div>
+                 <div class="compression-info ${result.compressionRatio > 0 ? 'success' : 'warning'}">
+                   ${result.compressionRatio > 0 ? `${result.compressionRatio}% reduced` : 'No compression achieved'}
+                 </div>
                  <button class="download-btn" onclick="downloadImage('${result.original.name}', '${compressedUrl}', '${result.outputExtension}')">
                    Download
                  </button>
@@ -1695,7 +1771,7 @@
     <div class="footer-section">
       <div class="container">
         <div class="footer-content">
-          <p>&copy; 2024 Image Compressor. All rights reserved.</p>
+          <p>&copy; 2024 ImageCompression.online. All rights reserved.</p>
           <button class="terms-link" onclick="openTermsModal()">Terms & Conditions</button>
         </div>
       </div>
@@ -1742,11 +1818,12 @@
           <p>These terms may be updated periodically. Continued use of the service constitutes acceptance of any modified terms.</p>
           
           <h3>9. Contact Information</h3>
-          <p>For questions about these terms or the service, please refer to the contact information provided on this website.</p>
+          <p>For questions about these terms or the service, please visit <a href="http://www.imagecompression.online" target="_blank">ImageCompression.online</a> or refer to the contact information provided on this website.</p>
           
           <div class="terms-footer">
             <p><strong>Last Updated:</strong> December 2024</p>
             <p><strong>Effective Date:</strong> December 2024</p>
+            <p><strong>Website:</strong> <a href="http://www.imagecompression.online" target="_blank">ImageCompression.online</a></p>
           </div>
         </div>
       </div>
