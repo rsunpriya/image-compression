@@ -6,22 +6,9 @@
        <title>Image Compressor - Secure & Auto-Clean</title>
     <link rel="icon" type="image/svg+xml" href="./logo-icon.svg">
     <link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet">
-    <!-- Configuration -->
-    <script src="./config.js"></script>
     <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2872221138213480"
          crossorigin="anonymous"></script>
-    <script>
-      // Update AdSense client ID from config
-      document.addEventListener('DOMContentLoaded', function() {
-        if (window.AD_CONFIG && window.AD_CONFIG.publisherId) {
-          const adsbygoogleScript = document.querySelector('script[src*="adsbygoogle.js"]');
-          if (adsbygoogleScript) {
-            adsbygoogleScript.src = adsbygoogleScript.src.replace('ca-pub-YOUR_PUBLISHER_ID', window.AD_CONFIG.publisherId);
-          }
-        }
-      });
-    </script>
     <!-- Security: Disable right-click and text selection -->
     <script>
       // Disable right-click context menu
@@ -1057,8 +1044,8 @@
        <div class="ad-label">Advertisement</div>
        <ins class="adsbygoogle"
             style="display:block"
-            data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-            data-ad-slot="YOUR_TOP_AD_SLOT"
+            data-ad-client="ca-pub-2872221138213480"
+            data-ad-slot="4753788091"
             data-ad-format="auto"
             data-full-width-responsive="true"></ins>
        <script>
@@ -1090,8 +1077,8 @@
         <div class="ad-label">Advertisement</div>
         <ins class="adsbygoogle"
              style="display:block"
-             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-             data-ad-slot="YOUR_LEFT_SIDEBAR_AD_SLOT"
+             data-ad-client="ca-pub-2872221138213480"
+             data-ad-slot="3850085753"
              data-ad-format="vertical"></ins>
         <script>
              (adsbygoogle = window.adsbygoogle || []).push({});
@@ -1115,8 +1102,8 @@
         <div class="ad-label">Advertisement</div>
         <ins class="adsbygoogle"
              style="display:block"
-             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-             data-ad-slot="YOUR_COMPRESSION_AD_SLOT"
+             data-ad-client="ca-pub-2872221138213480"
+             data-ad-slot="1223922418"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
         <script>
@@ -1131,8 +1118,8 @@
          <div class="ad-label">Advertisement</div>
          <ins class="adsbygoogle"
               style="display:block"
-              data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-              data-ad-slot="YOUR_BOTTOM_AD_SLOT"
+              data-ad-client="ca-pub-2872221138213480"
+              data-ad-slot="1954550153"
               data-ad-format="auto"
               data-full-width-responsive="true"></ins>
          <script>
@@ -1146,8 +1133,8 @@
      <div class="ad-label">Advertisement</div>
      <ins class="adsbygoogle"
           style="display:block"
-          data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-          data-ad-slot="YOUR_SIDEBAR_AD_SLOT"
+          data-ad-client="ca-pub-2872221138213480"
+          data-ad-slot="8663428739"
           data-ad-format="vertical"></ins>
      <script>
           (adsbygoogle = window.adsbygoogle || []).push({});
@@ -1623,46 +1610,10 @@
       
       // AdSense Helper Functions
       function loadAds() {
-        // Update ad slots with configuration
-        updateAdSlots();
-        
         // Load ads when page is ready
         if (typeof adsbygoogle !== 'undefined') {
           (adsbygoogle = window.adsbygoogle || []).push({});
         }
-      }
-      
-      function updateAdSlots() {
-        if (!window.AD_CONFIG) return;
-        
-        // Update publisher ID
-        const publisherId = window.AD_CONFIG.publisherId;
-        const adSlots = window.AD_CONFIG.adSlots;
-        
-        // Update all ad units
-        const adUnits = document.querySelectorAll('.adsbygoogle');
-        adUnits.forEach(unit => {
-          // Update publisher ID
-          if (unit.getAttribute('data-ad-client') === 'ca-pub-YOUR_PUBLISHER_ID') {
-            unit.setAttribute('data-ad-client', publisherId);
-          }
-          
-          // Update ad slots
-          const currentSlot = unit.getAttribute('data-ad-slot');
-          if (currentSlot) {
-            if (currentSlot === 'YOUR_TOP_AD_SLOT' && adSlots.topAd) {
-              unit.setAttribute('data-ad-slot', adSlots.topAd);
-            } else if (currentSlot === 'YOUR_LEFT_SIDEBAR_AD_SLOT' && adSlots.leftSidebarAd) {
-              unit.setAttribute('data-ad-slot', adSlots.leftSidebarAd);
-            } else if (currentSlot === 'YOUR_COMPRESSION_AD_SLOT' && adSlots.compressionAd) {
-              unit.setAttribute('data-ad-slot', adSlots.compressionAd);
-            } else if (currentSlot === 'YOUR_BOTTOM_AD_SLOT' && adSlots.bottomAd) {
-              unit.setAttribute('data-ad-slot', adSlots.bottomAd);
-            } else if (currentSlot === 'YOUR_SIDEBAR_AD_SLOT' && adSlots.sidebarAd) {
-              unit.setAttribute('data-ad-slot', adSlots.sidebarAd);
-            }
-          }
-        });
       }
       
              // Load ads when page loads
